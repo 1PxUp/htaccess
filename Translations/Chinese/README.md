@@ -17,13 +17,13 @@
     - [强制不带 www](#force-non-www)
     - [通用方式强制不带 www](#force-non-www-in-a-generic-way)
     - [强制 HTTPS](#force-https)
-    - [Force HTTPS Behind a Proxy](#force-https-behind-a-proxy)
-    - [Force Trailing Slash](#force-trailing-slash)
-    - [Remove Trailing Slash](#remove-trailing-slash)
-    - [Redirect a Single Page](#redirect-a-single-page)
-    - [Redirect Using RedirectMatch](#redirect-using-redirectmatch)
-    - [Alias a Single Directory](#alias-a-single-directory)
-    - [Alias Paths to Script](#alias-paths-to-script)
+    - [通过代理强制 HTTPS](#force-https-behind-a-proxy)
+    - [强制末尾斜线](#force-trailing-slash)
+    - [移除末尾斜线](#remove-trailing-slash)
+    - [重定向到单页](#redirect-a-single-page)
+    - [使用定向匹配重定向](#redirect-using-redirectmatch)
+    - [简单目录设置别名](#alias-a-single-directory)
+    - [脚本设置别名路径](#alias-paths-to-script)
     - [Redirect an Entire Site](#redirect-an-entire-site)
     - [Alias "Clean" URLs](#alias-clean-urls)
     - [Exclude a URL from Redirection](#exclude-url-from-redirection)
@@ -106,36 +106,37 @@ RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 </IfModule>
 ```
 
-### Force HTTPS Behind a Proxy
+### <a name="force-https-behind-a-proxy">通过代理强制 HTTPS
+如果通过代理给你的服务提供 TLS 支持，则生效。
 Useful if you have a proxy in front of your server performing TLS termination.
 ``` apacheconf
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 ```
 
-### Force Trailing Slash
+### <a name="force-trailing-slash">强制末尾斜线
 ``` apacheconf
 RewriteCond %{REQUEST_URI} /+[^\.]+$
 RewriteRule ^(.+[^/])$ %{REQUEST_URI}/ [R=301,L]
 ```
 
-### Remove Trailing Slash
-This snippet will redirect paths ending in slashes to their non-slash-terminated counterparts (except for actual directories), e.g. `http://www.example.com/blog/` to `http://www.example.com/blog`. This is important for SEO, since it’s [recommended](http://overit.com/blog/canonical-urls) to have a canonical URL for every page.
+### <a name="remove-trailing-slash">移除末尾斜线
+这代码段会将以斜杠结尾的路径，重定向到非斜杠终止的路径 （真实目录除外）， 例如：`http://www.example.com/blog/` 到 `http://www.example.com/blog`. 这对 SEO 很重要， 因为这里[建议](http://overit.com/blog/canonical-urls)每个页面都有一个规范的 URL.
 ``` apacheconf
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} (.+)/$
 RewriteRule ^ %1 [R=301,L]
 ```
-[Source](https://stackoverflow.com/questions/21417263/htaccess-add-remove-trailing-slash-from-url#27264788)
+[来源](https://stackoverflow.com/questions/21417263/htaccess-add-remove-trailing-slash-from-url#27264788)
 
-### Redirect a Single Page
+### <a name="redirect-a-single-page">重定向到单页
 ``` apacheconf
 Redirect 301 /oldpage.html http://www.example.com/newpage.html
 Redirect 301 /oldpage2.html http://www.example.com/folder/
 ```
-[Source](http://css-tricks.com/snippets/htaccess/301-redirects/)
+[来源](http://css-tricks.com/snippets/htaccess/301-redirects/)
 
-### Redirect Using RedirectMatch
+### <a name="redirect-using-redirectmatch">使用定向匹配重定向
 ``` apacheconf
 RedirectMatch 301 /subdirectory(.*) http://www.newsite.com/newfolder/$1
 RedirectMatch 301 ^/(.*).htm$ /$1.html
@@ -147,15 +148,15 @@ RedirectMatch 301 ^/manual/(.*)$ http://www.php.net/manual/$1
 RedirectMatch 301 ^/dreamweaver/(.*)$ /tools/$1
 RedirectMatch 301 ^/z/(.*)$ http://static.askapache.com/$1
 ```
-[Source](http://www.askapache.com/htaccess/301-redirect-with-mod_rewrite-or-redirectmatch.html#301_Redirects_RedirectMatch)
+[来源](http://www.askapache.com/htaccess/301-redirect-with-mod_rewrite-or-redirectmatch.html#301_Redirects_RedirectMatch)
 
-### Alias a Single Directory
+### <a name="alias-a-single-directory">简单目录设置别名
 ``` apacheconf
 RewriteEngine On
 RewriteRule ^source-directory/(.*) /target-directory/$1 [R=301,L]
 ```
 
-### Alias Paths to Script
+### <a name="alias-paths-to-script">脚本设置别名路径
 ``` apacheconf
 FallbackResource /index.fcgi
 ```
