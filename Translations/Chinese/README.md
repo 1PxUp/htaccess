@@ -160,7 +160,7 @@ RewriteRule ^source-directory/(.*) /target-directory/$1 [R=301,L]
 ``` apacheconf
 FallbackResource /index.fcgi
 ```
-This example has an `index.fcgi` file in some directory, and any requests within that directory that fail to resolve a filename/directory will be sent to the `index.fcgi` script. It’s good if you want `baz.foo/some/cool/path` to be handled by `baz.foo/index.fcgi` (which also supports requests to `baz.foo`) while maintaining `baz.foo/css/style.css` and the like. Get access to the original path from the PATH_INFO environment variable, as exposed to your scripting environment.
+这个例子在某个目录中有 `index.fcgi` 文件， 并且该目录中任何无法解析的文件名/目录请求，都将被发送到 `index.fcgi` 脚本。 It’s good if you want `baz.foo/some/cool/path` to be handled by `baz.foo/index.fcgi` (which also supports requests to `baz.foo`) while maintaining `baz.foo/css/style.css` and the like. Get access to the original path from the PATH_INFO environment variable, as exposed to your scripting environment.
 
 ``` apacheconf
 RewriteEngine On
@@ -171,7 +171,7 @@ RewriteRule ^(.*)$ index.fcgi/$1 [QSA,L]
 ```
 This is a less efficient version of the FallbackResource directive (because using `mod_rewrite` is more complex than just handling the `FallbackResource` directive), but it’s also more flexible.
 
-### Redirect an Entire Site
+### 重定向到网站
 ``` apacheconf
 Redirect 301 / http://newsite.com/
 ```
@@ -193,8 +193,8 @@ RewriteEngine On
 RewriteRule ^robots.txt - [L]
 ```
 
-## Security
-### Deny All Access
+## 安全
+### 拒绝所有访问
 ``` apacheconf
 ## Apache 2.2
 Deny from all
@@ -203,9 +203,9 @@ Deny from all
 # Require all denied
 ```
 
-But wait, this will lock you out from your content as well! Thus introducing...
+但是，这也会使你无法反问内容！因此介绍...
 
-### Deny All Access Except Yours
+### 拒绝除您之外的所有访问
 ``` apacheconf
 ## Apache 2.2
 Order deny,allow
@@ -216,11 +216,11 @@ Allow from xxx.xxx.xxx.xxx
 # Require all denied
 # Require ip xxx.xxx.xxx.xxx
 ```
-`xxx.xxx.xxx.xxx` is your IP. If you replace the last three digits with `0/12` for example, this will specify a range of IPs within the same network, thus saving you the trouble to list all allowed IPs separately. [Source](http://speckyboy.com/2013/01/08/useful-htaccess-snippets-and-hacks/)
+`xxx.xxx.xxx.xxx` 是你的 IP. 如果你用例如 `0/12` 替换最后三位数字， 这将在同一网络中指定 IP 范围，从而省去了分别列出所有允许的 IP 的麻烦。 [来源](http://speckyboy.com/2013/01/08/useful-htaccess-snippets-and-hacks/)
 
-Now of course there's a reversed version:
+当然这里有一个相反的版本：
 
-### Allow All Access Except Spammers'
+### 允许除垃圾邮件发送者之外的所有访问权限
 ``` apacheconf
 ## Apache 2.2
 Order deny,allow
@@ -233,21 +233,21 @@ Deny from xxx.xxx.xxx.xxy
 # Require not ip xxx.xxx.xxx.xxy
 ```
 
-### Deny Access to Hidden Files and Directories
-Hidden files and directories (those whose names start with a dot `.`) should most, if not all, of the time be secured. For example: `.htaccess`, `.htpasswd`, `.git`, `.hg`...
+### 拒绝访问隐藏的文件和目录
+隐藏的文件和目录（名称以点号 `.` 开头），应该， 即使不是全部，在大多数情况下，也应该得到保护。 例如： `.htaccess`, `.htpasswd`, `.git`, `.hg`...
 ``` apacheconf
 RewriteCond %{SCRIPT_FILENAME} -d [OR]
 RewriteCond %{SCRIPT_FILENAME} -f
 RewriteRule "(^|/)\." - [F]
 ```
 
-Alternatively, you can just raise a “Not Found” error, giving the attacker no clue:
+或者，你可以抛出一个 “Not Found” 错误，使攻击者没有任何线索：
 ``` apacheconf
 RedirectMatch 404 /\..*$
 ```
 
-### Deny Access to Backup and Source Files
-These files may be left by some text/HTML editors (like Vi/Vim) and pose a great security danger if exposed to public.
+### 拒绝访问备份和源文件
+这些文件可能由某些 text/HTML 编辑器 （如 Vi/Vim） 遗留，如果公开暴露，构成极大的安全隐患。
 ``` apacheconf
 <FilesMatch "(\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|swp)|~)$">
     ## Apache 2.2
@@ -259,9 +259,9 @@ These files may be left by some text/HTML editors (like Vi/Vim) and pose a great
     # Require all denied
 </FilesMatch>
 ```
-[Source](https://github.com/h5bp/server-configs-apache)
+[来源](https://github.com/h5bp/server-configs-apache)
 
-### Disable Directory Browsing
+### 禁用目录浏览
 ``` apacheconf
 Options All -Indexes
 ```
